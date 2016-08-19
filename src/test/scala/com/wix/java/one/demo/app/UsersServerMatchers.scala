@@ -10,4 +10,8 @@ trait UsersServerMatchers {
     (t: HttpClientResponse) => t.statusCode
   }
 
+  def beNotFound = be_==(404) ^^ {
+    (t: HttpClientResponse) => t.statusCode
+  }
+
 }
