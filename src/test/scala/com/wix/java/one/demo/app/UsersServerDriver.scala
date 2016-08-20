@@ -49,5 +49,5 @@ trait VertXClientBase {
 object JsonSupport {
   val m = new ObjectMapper()
   m.registerModule(new DefaultScalaModule)
-  def toJson(o: Any): String = m.writeValueAsString(o)
+  implicit def anyToJson(o: AnyRef): String = m.writeValueAsString(o)
 }

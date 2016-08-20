@@ -5,6 +5,7 @@ import org.specs2.specification.Scope
 import java.util.UUID
 import com.wix.java.one.demo.UsersServerStarter
 import com.wix.java.one.demo.UsersRouter.User
+import JsonSupport.anyToJson
 
 class UsersServersITTest extends SpecificationWithJUnit
 with UsersServerMatchers {
@@ -26,7 +27,7 @@ with UsersServerMatchers {
     "post user should be created" in new UsersServerContext {
       post(path = s"/users",
         assert = response => response must beCreated,
-        data = JsonSupport.toJson(user))
+        data = user)
     }
   }
 }
