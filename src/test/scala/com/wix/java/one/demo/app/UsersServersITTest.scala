@@ -14,7 +14,7 @@ with UsersServerMatchers {
 
   trait UsersServerContext extends Scope
   with VertXClientBase
-  with UsersServerDriver {    
+  with UsersServerDriver {
     val userId = UUID.randomUUID.toString
     val user: User = User("id", "kfkf@sss.com", "name")
   }
@@ -26,8 +26,8 @@ with UsersServerMatchers {
     }
     "post user should be created" in new UsersServerContext {
       post(path = s"/users",
-        assert = response => response must beCreated,
-        data = user)
+        data = user,
+        assert = response => response must beCreated)
     }
   }
 }
