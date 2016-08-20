@@ -11,6 +11,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <specs2.version>3.6.1</specs2.version>
+        <!-- Scala -->
+        <scala.version>2.11.7</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
+
+        <!-- Akka -->
+        <akka.streams.version>1.0</akka.streams.version>
+        <akka.version>2.3.12</akka.version>
+
     </properties>
 
     <dependencies>
@@ -64,6 +72,22 @@
             <artifactId>vertx-web</artifactId>
             <version>3.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http-experimental_${scala.binary.version}</artifactId>
+            <version>${akka.streams.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http-spray-json-experimental_${scala.binary.version}</artifactId>
+            <version>${akka.streams.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http-xml-experimental_${scala.binary.version}</artifactId>
+            <version>${akka.streams.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

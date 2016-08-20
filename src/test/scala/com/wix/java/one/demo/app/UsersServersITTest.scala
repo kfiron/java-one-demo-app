@@ -3,6 +3,7 @@ package com.wix.java.one.demo.app
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
 import java.util.UUID
+import com.wix.java.one.demo.UsersServerStarter
 
 
 class UsersServersITTest extends SpecificationWithJUnit
@@ -12,8 +13,8 @@ with UsersServerMatchers {
   trait UsersServerContext extends Scope
   with VertXClientBase
   with UsersServerDriver {
-    
-    val userId = UUID.randomUUID
+    UsersServerStarter.start
+    val userId = UUID.randomUUID.toString
   }
 
 
