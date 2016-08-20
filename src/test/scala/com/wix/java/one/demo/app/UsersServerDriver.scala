@@ -5,6 +5,8 @@ import scala.concurrent.{Await, Promise}
 import io.vertx.core.{Vertx, Handler}
 import scala.concurrent.duration._
 import com.wix.java.one.demo.UsersServerStarter
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 trait TransportBase {
   
@@ -33,6 +35,7 @@ trait UsersServerDriver extends TransportBase {
   def post[T](path: String, data: String, assert: HttpClientResponse => T) = {
     execute { p: Promise[T] =>
       httpClient.post(UsersServerStarter.port, "localhost", path, handler(p, assert))
+                .putHeader("Content-Type", "application/json")
                 .end(data)
     }    
   }
@@ -41,4 +44,10 @@ trait UsersServerDriver extends TransportBase {
 trait VertXClientBase {
   val vertx = Vertx.vertx
   val httpClient = vertx.createHttpClient
+}
+
+object JsonSupport {
+  val m = new ObjectMapper()
+  m.registerModule(new DefaultScalaModule)
+  def toJson(o: Any): String = m.writeValueAsString(o)
 }
