@@ -15,9 +15,8 @@ with UsersServerMatchers {
   with VertXClientBase
   with UsersServerDriver {    
     val userId = UUID.randomUUID.toString
+    val user: User = User("id", "kfkf@sss.com", "name")
   }
-  
-  val user: User = User("id", "kfkf@sss.com", "name")    
 
   "users server test" should {
     "load user by id return not exists" in new UsersServerContext {
