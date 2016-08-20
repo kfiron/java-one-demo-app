@@ -8,13 +8,13 @@ import com.wix.java.one.demo.UsersServerStarter
 
 trait UsersServerDriver {
   self: VertXClientBase =>
-  def get[T](path: String, f: HttpClientResponse => T) = {
+  def get[T](path: String, assert: HttpClientResponse => T) = {
     
     val p = Promise[T]()
     
     httpClient.getNow(UsersServerStarter.port, "localhost", path, new Handler[HttpClientResponse] {
       override def handle(response: HttpClientResponse): Unit = {
-        p success f(response)
+        p success assert(response)
       }
     })
 

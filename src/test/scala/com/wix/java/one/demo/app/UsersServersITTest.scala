@@ -20,7 +20,8 @@ with UsersServerMatchers {
 
   "users server test" should {
     "load user by id return not exists" in new UsersServerContext {
-      get(s"/users/$userId", response => response must beNotFound)
+      get(path = s"/users/$userId",
+        assert = response => response must beNotFound)
     }
   }
 }
