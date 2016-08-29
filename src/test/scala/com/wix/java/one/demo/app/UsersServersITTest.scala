@@ -4,8 +4,8 @@ import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
 import java.util.UUID
 import com.wix.java.one.demo.UsersServerStarter
-import com.wix.java.one.demo.UsersRouter.User
 import JsonSupport.anyToJson
+import com.wix.java.one.demo.domain.User
 
 class UsersServersITTest extends SpecificationWithJUnit
 with UsersServerMatchers {
@@ -16,11 +16,11 @@ with UsersServerMatchers {
   with VertXClientBase
   with UsersServerDriver {
     val userId = UUID.randomUUID.toString
-    val user: User = User("id", "kfkf@sss.com", "name")
+    val user: User = User(userId, "kfkf@sss.com", "name")
   }
 
   "users server test" should {
-    "load user by id return not exists" in new UsersServerContext {
+    /*"load user by id return not exists" in new UsersServerContext {
       get(path = s"/users/$userId",
         assert = response => response must beNotFound)
     }
@@ -28,6 +28,14 @@ with UsersServerMatchers {
       post(path = s"/users",
         data = user,
         assert = response => response must beCreated)
+    }*/
+    "post and load user" in new UsersServerContext {
+      post(path = s"/users",
+        data = user,
+        assert = response => response must beCreated)
+      get(path = s"/users/$userId",
+        assert = response => response must beUserLike(user))
+
     }
   }
 }
