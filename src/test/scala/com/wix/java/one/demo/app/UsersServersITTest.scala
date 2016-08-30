@@ -8,12 +8,16 @@ import com.wix.java.one.demo.domain.User
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
+import org.specs2.matcher.Matcher
+import scala.concurrent.Future
 
 class UsersServersITTest extends SpecificationWithJUnit
 with UsersServerMatchers
 with VertXClientBase
 with UsersServerDriver {
 
+  implicit def matcherToFutureMatcher[T](m: Matcher[T]): Matcher[Future[T]] = m.await
+  
   UsersServerStarter.start
   implicit val executionEnv = ExecutionEnv.fromGlobalExecutionContext
 
@@ -25,21 +29,21 @@ with UsersServerDriver {
   "users server test" should {
     "load user" should {
       "does not exists" in new UsersServerContext {
-        get(path = s"/users/$userId") must beNotFound.await
+        get(path = s"/users/$userId") must beNotFound
       }
       "for given user should return the user" in new UsersServerContext {
         givenUser(user)
-        get(path = s"/users/$userId") must beUserLike(user).await
+        get(path = s"/users/$userId") must beUserLike(user)
       }
     }
     "create user" should {
       "should be created" in new UsersServerContext {
         post(path = s"/users",
-          data = user) must beCreated.await
+          data = user) must beCreated
       }
       "should return invalid request for bad input" in new UsersServerContext {
         post(path = s"/users",
-          data = user.copy(email = "invalid-email")) must beBadRequest.await
+          data = user.copy(email = "invalid-email")) must beBadRequest
       }
     }
 
