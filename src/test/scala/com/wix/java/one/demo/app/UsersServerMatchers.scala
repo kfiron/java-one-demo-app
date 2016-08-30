@@ -5,17 +5,27 @@ import com.wix.java.one.demo.domain.User
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpClientResponse
-import org.specs2.matcher.Matcher
-import org.specs2.matcher.Matchers._
+import org.specs2.matcher.{Matchers, Matcher}
+import Matchers._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.{Future, Promise}
+import org.specs2.concurrent.ExecutionEnv
+
 
 trait UsersServerMatchers {
 
   def beCreated = be_==(201) ^^ { (_: HttpClientResponse).statusCode }
   def beNotFound = be_==(404) ^^ { (_: HttpClientResponse).statusCode }
-  def beUserLike(u: User): Matcher[String] =
-    be_===(u) ^^ { (r: String) => asObject(r) }
+
+  def beUserLike(u: User)(implicit env: ExecutionEnv): Matcher[HttpClientResponse] =
+    be_===(u).await ^^ { (r: HttpClientResponse) =>
+      val p = Promise[String]()
+      r.bodyHandler(new Handler[Buffer] {
+        def handle(event: Buffer): Unit = 
+          p.success(new String(event.getBytes, "UTF-8"))
+      })
+      p.future.map( asObject )  }
 
   implicit class HttpClientResponseParser(r: HttpClientResponse) {
     def asString: Future[String] = {

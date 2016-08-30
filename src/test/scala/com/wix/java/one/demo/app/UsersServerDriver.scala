@@ -27,23 +27,32 @@ trait TransportBase {
 
 }
 
+case class Response(body: String, statusCode: Int)
+
 trait UsersServerDriver extends TransportBase { self: VertXClientBase =>
 
-  def get[T](path: String): Future[String] = {
+  def get[T](path: String): Future[HttpClientResponse] = {
     val p = Promise[HttpClientResponse]()
     httpClient.getNow(UsersServerStarter.port, "localhost", path, new Handler[HttpClientResponse] {
       def handle(event: HttpClientResponse) = p.success(event)
     })
     p.future
-     .flatMap( _.responseBody )
   }
 
-  def post[T](path: String, data: String, assert: HttpClientResponse => T) = {
-    execute { p: Promise[T] =>
-      httpClient.post(UsersServerStarter.port, "localhost", path, handler(p, assert))
-                .putHeader("Content-Type", "application/json")
-                .end(data)
-    }
+  def post[T](path: String, data: String): Future[HttpClientResponse] = {
+    val p = Promise[HttpClientResponse]()
+    httpClient.post(UsersServerStarter.port, "localhost", path, new Handler[HttpClientResponse] {
+      def handle(event: HttpClientResponse) = p.success(event)
+    })
+      .putHeader("Content-Type", "application/json")
+      .end(data)
+    p.future
+    
+//    execute { p: Promise[T] =>
+//      httpClient.post(UsersServerStarter.port, "localhost", path, handler(p, assert))
+//                .putHeader("Content-Type", "application/json")
+//                .end(data)
+//    }
   }
 
 

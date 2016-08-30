@@ -22,20 +22,16 @@ class UsersServersITTest extends SpecificationWithJUnit with UsersServerMatchers
   }
 
   "users server test" should {
-    /*"load user by id return not exists" in new UsersServerContext {
-      get(path = s"/users/$userId",
-        assert = response => response must beNotFound)
+    "load user by id return not exists" in new UsersServerContext {
+      get(path = s"/users/$userId") must beNotFound.await
     }
     "post user should be created" in new UsersServerContext {
       post(path = s"/users",
-        data = user,
-        assert = response => response must beCreated)
-    }*/
+        data = user) must beCreated.await
+    }
     "post and load user" in new UsersServerContext {
       post(path = s"/users",
-           data = user,
-           assert = response => response must beCreated)
-
+        data = user) must beCreated.await
       get(path = s"/users/$userId") must beUserLike(user).await
 
     }
