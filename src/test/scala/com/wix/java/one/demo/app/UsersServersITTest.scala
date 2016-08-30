@@ -27,7 +27,7 @@ with UsersServerDriver {
       "does not exists" in new UsersServerContext {
         get(path = s"/users/$userId") must beNotFound.await
       }
-      "for given user should rerurn the user" in new UsersServerContext {
+      "for given user should return the user" in new UsersServerContext {
         givenUser(user)
         get(path = s"/users/$userId") must beUserLike(user).await
       }

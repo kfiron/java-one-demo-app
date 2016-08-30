@@ -8,22 +8,19 @@ import spray.json.CompactPrinter
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 
 
-
-
 object UsersRouter {
 
 
   implicit val userFormat = jsonFormat3(User)
   implicit val printer = CompactPrinter
   import JacksonSupport._
-  
-  val dao = new InMemoryUsersDao
 
+  val usersService = new UsersService(new InMemoryUsersDao)
 
   val router = get {
     path("users" / Segment) {
       id: String =>
-        val response = dao.byId(id).fold(HttpResponse(404))
+        val response = usersService.byId(id: String).fold(HttpResponse(404))
                                         {u => HttpResponse(status = 200,
                                                             entity = HttpEntity(asJsonStr(u)))}
         complete(response)
@@ -34,7 +31,7 @@ object UsersRouter {
       decodeRequest {
         entity(as[User]) {
           u =>
-            dao.insert(u).get
+            usersService.create(u)
             complete(HttpResponse(status = 201))
         }
       }
