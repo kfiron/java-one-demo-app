@@ -9,32 +9,41 @@ import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
 
-class UsersServersITTest extends SpecificationWithJUnit with UsersServerMatchers {
+class UsersServersITTest extends SpecificationWithJUnit
+with UsersServerMatchers
+with VertXClientBase
+with UsersServerDriver {
 
   UsersServerStarter.start
   implicit val executionEnv = ExecutionEnv.fromGlobalExecutionContext
 
-  trait UsersServerContext extends Scope
-  with VertXClientBase
-  with UsersServerDriver {
+  trait UsersServerContext extends Scope {
     val userId = UUID.randomUUID.toString
     val user: User = User(userId, "kfkf@sss.com", "name")
   }
 
   "users server test" should {
-    "load user by id return not exists" in new UsersServerContext {
-      get(path = s"/users/$userId") must beNotFound.await
+    "load user" should {
+      "does not exists" in new UsersServerContext {
+        get(path = s"/users/$userId") must beNotFound.await
+      }
+      "for given user should rerurn the user" in new UsersServerContext {
+        givenUser(user)
+        get(path = s"/users/$userId") must beUserLike(user).await
+      }
     }
-    "post user should be created" in new UsersServerContext {
-      post(path = s"/users",
-        data = user) must beCreated.await
+    "create user" should {
+      "post user should be created" in new UsersServerContext {
+        post(path = s"/users",
+          data = user) must beCreated.await
+      }
     }
-    "post and load user" in new UsersServerContext {
-      post(path = s"/users",
-        data = user) must beCreated.await
-      get(path = s"/users/$userId") must beUserLike(user).await
 
-    }
+
   }
+
+
+  def givenUser(user: User) = post(path = s"/users",
+    data = user) must beCreated.await
 }
 

@@ -47,12 +47,7 @@ trait UsersServerDriver extends TransportBase { self: VertXClientBase =>
       .putHeader("Content-Type", "application/json")
       .end(data)
     p.future
-    
-//    execute { p: Promise[T] =>
-//      httpClient.post(UsersServerStarter.port, "localhost", path, handler(p, assert))
-//                .putHeader("Content-Type", "application/json")
-//                .end(data)
-//    }
+
   }
 
 
