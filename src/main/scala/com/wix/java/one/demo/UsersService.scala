@@ -9,7 +9,7 @@ class UsersService(dao: UsersDao) {
   import UserValidator.validate
 
   def byId(id: String): Option[User] = dao.byId(id)
-
+  def delete(id: String): Unit = dao.deleteBy(id).get
   def create(user: User): Try[Unit] = Try {
     validate(user)
     dao.insert(user)

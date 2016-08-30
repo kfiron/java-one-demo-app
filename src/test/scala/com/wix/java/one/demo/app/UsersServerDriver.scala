@@ -39,6 +39,14 @@ trait UsersServerDriver extends TransportBase { self: VertXClientBase =>
     p.future
   }
 
+  def delete[T](path: String): Future[HttpClientResponse] = {
+    val p = Promise[HttpClientResponse]()
+    httpClient.delete(UsersServerStarter.port, "localhost", path, new Handler[HttpClientResponse] {
+      def handle(event: HttpClientResponse) = p.success(event)
+    }).end()
+    p.future
+  }
+
   def post[T](path: String, data: String): Future[HttpClientResponse] = {
     val p = Promise[HttpClientResponse]()
     httpClient.post(UsersServerStarter.port, "localhost", path, new Handler[HttpClientResponse] {

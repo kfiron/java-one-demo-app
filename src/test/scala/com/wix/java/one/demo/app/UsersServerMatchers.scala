@@ -1,7 +1,7 @@
 package com.wix.java.one.demo.app
 
-import com.wix.java.one.demo.JacksonSupport.asObject
-import com.wix.java.one.demo.domain.User
+import com.wix.java.one.demo.JacksonSupport._
+import com.wix.java.one.demo.domain.{UsersList, User}
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpClientResponse
@@ -15,18 +15,32 @@ import org.specs2.concurrent.ExecutionEnv
 
 trait UsersServerMatchers {
 
-  def beCreated = be_==(201) ^^ { (_: HttpClientResponse).statusCode }
-  def beNotFound = be_==(404) ^^ { (_: HttpClientResponse).statusCode }
-  def beBadRequest = be_==(400) ^^ { (_: HttpClientResponse).statusCode }
+  def beCreated = be_==(201) ^^ {
+    (_: HttpClientResponse).statusCode
+  }
 
+  def beNotFound = be_==(404) ^^ {
+    (_: HttpClientResponse).statusCode
+  }
+
+  def beBadRequest = be_==(400) ^^ {
+    (_: HttpClientResponse).statusCode
+  }
+
+  def beDeleted = be_==(204) ^^ {
+    (_: HttpClientResponse).statusCode
+  }
+  
   def beUserLike(u: User)(implicit env: ExecutionEnv): Matcher[HttpClientResponse] =
-    be_===(u).await ^^ { (r: HttpClientResponse) =>
-      val p = Promise[String]()
-      r.bodyHandler(new Handler[Buffer] {
-        def handle(event: Buffer): Unit = 
-          p.success(new String(event.getBytes, "UTF-8"))
-      })
-      p.future.map( asObject )  }
+    be_===(u).await ^^ {
+      (r: HttpClientResponse) =>
+        val p = Promise[String]()
+        r.bodyHandler(new Handler[Buffer] {
+          def handle(event: Buffer): Unit =
+            p.success(new String(event.getBytes, "UTF-8"))
+        })
+        p.future.map(asObject)
+    }
 
   implicit class HttpClientResponseParser(r: HttpClientResponse) {
     def asString: Future[String] = {

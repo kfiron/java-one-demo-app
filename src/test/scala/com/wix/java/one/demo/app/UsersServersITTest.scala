@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.wix.java.one.demo.UsersServerStarter
 import com.wix.java.one.demo.app.JsonSupport.anyToJson
-import com.wix.java.one.demo.domain.User
+import com.wix.java.one.demo.domain.{UsersList, User}
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
@@ -17,6 +17,8 @@ with VertXClientBase
 with UsersServerDriver {
 
   implicit def matcherToFutureMatcher[T](m: Matcher[T]): Matcher[Future[T]] = m.await
+  
+  sequential
   
   UsersServerStarter.start
   implicit val executionEnv = ExecutionEnv.fromGlobalExecutionContext
@@ -45,6 +47,13 @@ with UsersServerDriver {
         post(path = s"/users",
           data = user.copy(email = "invalid-email")) must beBadRequest
       }
+    }
+    "delete users" should {
+      "should be deleted" in new UsersServerContext {
+        givenUser(user)
+        delete(path = s"/users/$userId") must beDeleted
+        get(path = s"/users/$userId") must beNotFound
+      }      
     }
 
 

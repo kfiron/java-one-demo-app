@@ -3,7 +3,7 @@ package com.wix.java.one.demo
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.{HttpEntity, HttpResponse}
 import spray.json.DefaultJsonProtocol._
-import com.wix.java.one.demo.domain.User
+import com.wix.java.one.demo.domain.{UsersList, User}
 import spray.json.CompactPrinter
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import scala.util.{Failure, Success}
@@ -26,6 +26,12 @@ object UsersRouter {
                                                             entity = HttpEntity(asJsonStr(u)))}
         complete(response)
 
+    }
+  } ~ delete {
+    path("users" / Segment) {
+      id: String =>      
+        usersService.delete(id)
+        complete(HttpResponse(status = 204))
     }
   } ~ post {
     path("users") {
