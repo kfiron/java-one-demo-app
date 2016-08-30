@@ -18,8 +18,6 @@ with UsersServerDriver {
 
   implicit def matcherToFutureMatcher[T](m: Matcher[T]): Matcher[Future[T]] = m.await
   
-  sequential
-  
   UsersServerStarter.start
   implicit val executionEnv = ExecutionEnv.fromGlobalExecutionContext
 
