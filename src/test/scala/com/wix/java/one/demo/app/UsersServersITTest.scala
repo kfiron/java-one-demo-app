@@ -1,16 +1,18 @@
 package com.wix.java.one.demo.app
 
+import java.util.UUID
+
+import com.wix.java.one.demo.UsersServerStarter
+import com.wix.java.one.demo.app.JsonSupport.anyToJson
+import com.wix.java.one.demo.domain.User
+import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
-import java.util.UUID
-import com.wix.java.one.demo.UsersServerStarter
-import JsonSupport.anyToJson
-import com.wix.java.one.demo.domain.User
 
-class UsersServersITTest extends SpecificationWithJUnit
-with UsersServerMatchers {
+class UsersServersITTest extends SpecificationWithJUnit with UsersServerMatchers {
 
   UsersServerStarter.start
+  implicit val executionEnv = ExecutionEnv.fromGlobalExecutionContext
 
   trait UsersServerContext extends Scope
   with VertXClientBase
@@ -31,10 +33,10 @@ with UsersServerMatchers {
     }*/
     "post and load user" in new UsersServerContext {
       post(path = s"/users",
-        data = user,
-        assert = response => response must beCreated)
-      get(path = s"/users/$userId",
-        assert = response => response must beUserLike(user))
+           data = user,
+           assert = response => response must beCreated)
+
+      get(path = s"/users/$userId") must beUserLike(user).await
 
     }
   }

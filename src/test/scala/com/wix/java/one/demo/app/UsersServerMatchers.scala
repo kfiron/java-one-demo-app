@@ -1,34 +1,36 @@
 package com.wix.java.one.demo.app
 
-import io.vertx.core.http.HttpClientResponse
-import org.specs2.matcher.Matchers
+import com.wix.java.one.demo.JacksonSupport.asObject
+import com.wix.java.one.demo.domain.User
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
-import scala.concurrent.{Await, Promise}
-import scala.concurrent.duration._
-import com.wix.java.one.demo.domain.User
-import com.wix.java.one.demo.JacksonSupport.asObject
+import io.vertx.core.http.HttpClientResponse
+import org.specs2.matcher.Matcher
+import org.specs2.matcher.Matchers._
+
+import scala.concurrent.{Future, Promise}
 
 trait UsersServerMatchers {
-  self: Matchers =>
-  
-  def beCreated = be_==(201) ^^ {
-    (t: HttpClientResponse) => t.statusCode
-  }
 
-  def beNotFound = be_==(404) ^^ {
-    (t: HttpClientResponse) => t.statusCode
-  }
-  
-  def beUserLike(u: User) = be_==(u) ^^ {
-    (t: HttpClientResponse) => {
-      val p = Promise[User]()
-      t.bodyHandler(new Handler[Buffer] {
-        override def handle(buffer: Buffer): Unit = {
-          p success asObject(new String(buffer.getBytes))
+  def beCreated = be_==(201) ^^ { (_: HttpClientResponse).statusCode }
+  def beNotFound = be_==(404) ^^ { (_: HttpClientResponse).statusCode }
+  def beUserLike(u: User): Matcher[String] =
+    be_===(u) ^^ { (r: String) => asObject(r) }
+
+  implicit class HttpClientResponseParser(r: HttpClientResponse) {
+    def asString: Future[String] = {
+      val p = Promise[String]()
+      r.handler(new Handler[Buffer] {
+        def handle(buffer: Buffer): Unit = {
+          println(new String(buffer.getBytes))
+          p success new String(buffer.getBytes)
         }
+
       })
-      Await.result(p.future, 6.seconds)
+      r.exceptionHandler(new Handler[Throwable] {
+        def handle(event: Throwable) = event.printStackTrace()
+      })
+      p.future
     }
   }
 
