@@ -33,9 +33,13 @@ with UsersServerDriver {
       }
     }
     "create user" should {
-      "post user should be created" in new UsersServerContext {
+      "should be created" in new UsersServerContext {
         post(path = s"/users",
           data = user) must beCreated.await
+      }
+      "should return invalid request for bad input" in new UsersServerContext {
+        post(path = s"/users",
+          data = user.copy(email = "invalid-email")) must beBadRequest.await
       }
     }
 

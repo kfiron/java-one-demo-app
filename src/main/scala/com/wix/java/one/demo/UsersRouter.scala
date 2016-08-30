@@ -6,6 +6,7 @@ import spray.json.DefaultJsonProtocol._
 import com.wix.java.one.demo.domain.User
 import spray.json.CompactPrinter
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import scala.util.{Failure, Success}
 
 
 object UsersRouter {
@@ -30,9 +31,12 @@ object UsersRouter {
     path("users") {
       decodeRequest {
         entity(as[User]) {
-          u =>
-            usersService.create(u)
-            complete(HttpResponse(status = 201))
+          user =>
+            usersService.create(user) match {
+              case Success(u) => complete(HttpResponse(status = 201))
+              case Failure(e) => complete(HttpResponse(status = 400))
+            }
+            
         }
       }
     }

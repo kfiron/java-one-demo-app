@@ -17,6 +17,7 @@ trait UsersServerMatchers {
 
   def beCreated = be_==(201) ^^ { (_: HttpClientResponse).statusCode }
   def beNotFound = be_==(404) ^^ { (_: HttpClientResponse).statusCode }
+  def beBadRequest = be_==(400) ^^ { (_: HttpClientResponse).statusCode }
 
   def beUserLike(u: User)(implicit env: ExecutionEnv): Matcher[HttpClientResponse] =
     be_===(u).await ^^ { (r: HttpClientResponse) =>
