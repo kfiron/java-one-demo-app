@@ -7,6 +7,7 @@ import com.wix.java.one.demo.{UsersDao, UsersService}
 import java.util.UUID
 import com.wix.java.one.demo.domain.User
 import scala.util.Try
+import com.workshop.ThrottlerFactory
 
 
 class UsersServiceTest extends SpecificationWithJUnit with Mockito {
@@ -17,7 +18,8 @@ class UsersServiceTest extends SpecificationWithJUnit with Mockito {
     val user = User(id = id,
       email = "kfirb@wix.com",
       name = "kfir bloch")
-    val usersService = new UsersService(dao)
+    val throttlerFactory = new ThrottlerFactory
+    val usersService = new UsersService(dao, throttlerFactory)
 
     def givenUser(user: User): User = {
       dao.insert(user) returns Try()

@@ -41,6 +41,14 @@ with UsersServerDriver {
         post(path = s"/users",
           data = user) must beCreated
       }
+      "should reject second request from the same ip " in new UsersServerContext {
+        post(path = s"/users",
+          data = user, 
+          ip = "200.200.200.1") must beCreated
+        post(path = s"/users",
+          data = user,
+          ip = "200.200.200.1") must beTooManyRequests
+      }
       "should return invalid request for bad input" in new UsersServerContext {
         post(path = s"/users",
           data = user.copy(email = "invalid-email")) must beBadRequest

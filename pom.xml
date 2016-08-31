@@ -226,7 +226,11 @@
             <artifactId>jackson-module-scala_2.11</artifactId>
             <version>2.7.5</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>tdd-workshop-jday</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

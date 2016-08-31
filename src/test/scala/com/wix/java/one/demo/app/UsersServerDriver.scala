@@ -47,16 +47,22 @@ trait UsersServerDriver extends TransportBase { self: VertXClientBase =>
     p.future
   }
 
-  def post[T](path: String, data: String): Future[HttpClientResponse] = {
+  def post[T](path: String, data: String, ip: String = randomIp): Future[HttpClientResponse] = {
     val p = Promise[HttpClientResponse]()
     httpClient.post(UsersServerStarter.port, "localhost", path, new Handler[HttpClientResponse] {
       def handle(event: HttpClientResponse) = p.success(event)
     })
       .putHeader("Content-Type", "application/json")
+      .putHeader("x-forwarded-for", ip)
       .end(data)
     p.future
 
   }
+  
+  def randomIp : String ={
+    val r = scala.util.Random
+    s"${r.nextInt(255)}.${r.nextInt(255)}.${r.nextInt(255)}.${r.nextInt(255)}"    
+  } 
 
 
   private implicit class HttpClientResponseParser(r: HttpClientResponse) {

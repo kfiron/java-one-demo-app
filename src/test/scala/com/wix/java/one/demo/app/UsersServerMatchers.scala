@@ -30,6 +30,10 @@ trait UsersServerMatchers {
   def beDeleted = be_==(204) ^^ {
     (_: HttpClientResponse).statusCode
   }
+
+  def beTooManyRequests = be_==(429) ^^ {
+    (_: HttpClientResponse).statusCode
+  }
   
   def beUserLike(u: User)(implicit env: ExecutionEnv): Matcher[HttpClientResponse] =
     be_===(u).await ^^ {
