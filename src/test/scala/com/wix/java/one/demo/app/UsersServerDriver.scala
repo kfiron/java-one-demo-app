@@ -88,5 +88,8 @@ object JsonSupport {
 }
 
 object Randoms {
-  def randomIp =
+  def randomIp : String ={
+    val r = scala.util.Random
+    s"${r.nextInt(255)}.${r.nextInt(255)}.${r.nextInt(255)}.${r.nextInt(255)}"
+  }
 }
