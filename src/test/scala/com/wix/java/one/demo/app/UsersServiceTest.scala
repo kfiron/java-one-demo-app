@@ -23,6 +23,8 @@ class UsersServiceTest extends SpecificationWithJUnit with Mockito {
       dao.insert(user) returns Try()
       user
     }
+    
+    def create(user: User) = usersService.create(user)
 
   }
 
@@ -31,41 +33,41 @@ class UsersServiceTest extends SpecificationWithJUnit with Mockito {
       "validate name" should {
         "return valid" in new UsersServiceScope {
           val validNameUser = givenUser(user.copy(name = "kfir bloch"))
-          usersService.create(validNameUser) must beSuccessfulTry
+          create(validNameUser) must beSuccessfulTry
         }
         "return illegal because null" in new UsersServiceScope {
           val inValidNameUser = givenUser(user.copy(name = null))
-          usersService.create(inValidNameUser) must beFailedTry.withThrowable[IllegalArgumentException]
+          create(inValidNameUser) must beFailedTry.withThrowable[IllegalArgumentException]
         }
         "return illegal because empty" in new UsersServiceScope {
           val inValidNameUser = givenUser(user.copy(name = ""))
-          usersService.create(inValidNameUser) must beFailedTry.withThrowable[IllegalArgumentException]
+          create(inValidNameUser) must beFailedTry.withThrowable[IllegalArgumentException]
         }
       }
       "validate email" should {
         "return valid" in new UsersServiceScope {
           val validEmailUser = givenUser(user.copy("kfirb@wix.com"))
-          usersService.create(validEmailUser) must beSuccessfulTry
+          create(validEmailUser) must beSuccessfulTry
         }
         "return illegal argument because empty" in new UsersServiceScope {
           val invalidEmailUser = givenUser(user.copy(email = ""))
-          usersService.create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
+          create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
         }
         "return illegal argument because null" in new UsersServiceScope {
           val invalidEmailUser = givenUser(user.copy(email = null))
-          usersService.create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
+          create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
         }
         "return illegal argument because without @" in new UsersServiceScope {
           val invalidEmailUser = givenUser(user.copy(email = "invalidEmail"))
-          usersService.create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
+          create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
         }
         "return illegal argument because no chars before @" in new UsersServiceScope {
           val invalidEmailUser = givenUser(user.copy(email = "@invalid"))
-          usersService.create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
+          create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
         }
         "return illegal argument because . after the @" in new UsersServiceScope {
           val invalidEmailUser = givenUser(user.copy(email = "invalid@invalid"))
-          usersService.create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
+          create(invalidEmailUser) must beFailedTry.withThrowable[IllegalArgumentException]
         }
       }
 

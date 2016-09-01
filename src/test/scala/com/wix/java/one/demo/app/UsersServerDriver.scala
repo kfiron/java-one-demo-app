@@ -86,3 +86,7 @@ object JsonSupport {
   m.registerModule(new DefaultScalaModule)
   implicit def anyToJson(o: AnyRef): String = m.writeValueAsString(o)
 }
+
+object Randoms {
+  def randomIp =
+}
