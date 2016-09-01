@@ -1,0 +1,13 @@
+get user not exists
+curl -v http://localhost:8877/users/some-id
+    
+
+
+curl -H -v \
+      "Content-Type: application/json" -X POST \
+       -d '{"id":"111","email":"kfirb@wix.com", "name": "Kfir Bloch"}' \
+       http://localhost:8877/users
+    
+
+get user not exists
+curl -v http://localhost:8877/users/111
