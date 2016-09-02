@@ -20,7 +20,7 @@ class UsersServiceTest extends SpecificationWithJUnit with Mockito {
     val usersService = new UsersService(dao)
 
     def givenUser(user: User): User = {
-      dao.insert(user) returns Try()
+      dao.insert(user) returns Try(Unit)
       user
     }
     

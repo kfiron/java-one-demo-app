@@ -28,16 +28,16 @@ with UsersServerDriver {
 
   "users server test" should {
     "load user" should {
-      "does not exists" in new UsersServerContext {
+      "and return does not exists" in new UsersServerContext {
         get(path = s"/users/$userId") must beNotFound
       }
-      "for given user should return the user" in new UsersServerContext {
+      "return a given user" in new UsersServerContext {
         givenUser(user)
         get(path = s"/users/$userId") must beUserLike(user)
       }
     }
     "create user" should {
-      "should be created" in new UsersServerContext {
+      "be created" in new UsersServerContext {
         post(path = s"/users",
           data = user) must beCreated
       }
@@ -48,7 +48,7 @@ with UsersServerDriver {
 
     }
     "delete users" should {
-      "should be deleted" in new UsersServerContext {
+      "be deleted" in new UsersServerContext {
         givenUser(user)
         delete(path = s"/users/$userId") must beDeleted
         get(path = s"/users/$userId") must beNotFound
