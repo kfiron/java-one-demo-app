@@ -3,7 +3,7 @@ curl -v http://localhost:8877/users/some-id
     
 
 
-curl -H -v \
+curl -v -H  \
       "Content-Type: application/json" -X POST \
        -d '{"id":"111","email":"kfirb@wix.com", "name": "Kfir Bloch"}' \
        http://localhost:8877/users
