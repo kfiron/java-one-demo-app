@@ -41,10 +41,11 @@ with UsersServerDriver {
         post(path = s"/users",
           data = user) must beCreated
       }
-      "should return invalid request for bad input" in new UsersServerContext {
+      "return invalid request for bad input" in new UsersServerContext {
         post(path = s"/users",
           data = user.copy(email = "invalid-email")) must beBadRequest
       }
+
     }
     "delete users" should {
       "should be deleted" in new UsersServerContext {
