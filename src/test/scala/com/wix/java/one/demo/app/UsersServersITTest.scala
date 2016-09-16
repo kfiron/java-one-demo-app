@@ -26,7 +26,7 @@ with UsersServerDriver {
     val user: User = User(userId, "kfkf@sss.com", "name")
   }
 
-  "users server test" should {
+  "users server" should {
     "load user" should {
       "and return does not exists" in new UsersServerContext {
         get(path = s"/users/$userId") must beNotFound

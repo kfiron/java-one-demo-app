@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>scala-maven-template</artifactId>
+    <artifactId>users-server-java-one</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>scala-maven-template</name>
